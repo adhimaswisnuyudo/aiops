@@ -26,6 +26,7 @@ class ServerConfig(BaseModel):
     username: str = Field("aiops", description="SSH username")
     ssh_key_path: Path | None = Field(None, description="Path to SSH private key")
     ssh_key_passphrase: SecretStr | None = Field(None, description="SSH key passphrase")
+    password: SecretStr | None = Field(None, description="SSH password (fallback jika key auth gagal)")
     environment: Literal["staging", "production"] = "staging"
     metadata: dict = Field(default_factory=dict, description="Arbitrary server metadata")
 
