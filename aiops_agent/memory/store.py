@@ -115,6 +115,16 @@ class MemoryStore:
     def add_history(self, server: str, role: str, content: str) -> None:
         """Add a message to the session conversation history."""
         conn = self._get_conn()
+        # Ensure table exists (defensive — Singleton may have been created with different db_path)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS session_history (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                server TEXT NOT NULL,
+                role TEXT NOT NULL,
+                content TEXT NOT NULL,
+                timestamp REAL NOT NULL
+            )
+        """)
         conn.execute(
             "INSERT INTO session_history (server, role, content, timestamp) VALUES (?, ?, ?, ?)",
             (server, role, content, time.time()),
