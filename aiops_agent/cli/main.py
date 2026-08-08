@@ -13,7 +13,7 @@ import yaml
 from aiops_agent.agent.planner import AgentPlanner
 from aiops_agent.config.models import AppConfig, SecurityConfig, ServerConfig
 from aiops_agent.memory.store import MemoryStore
-from aiops_agent.skills.registry import SkillRegistry
+from aiops_agent.skills.registry impox`rt SkillRegistry
 from aiops_agent.skills.server_status import ServerStatusSkill
 from aiops_agent.skills.laravel_status import LaravelStatusSkill
 from aiops_agent.skills.database_status import DatabaseStatusSkill
@@ -43,9 +43,9 @@ def setup_logging(verbose: bool = False) -> None:
 
 
 def load_config(path: Path) -> AppConfig:
-    """Load AppConfig from YAML file, or return default."""
+    """Load AppConfig from YAML file with env var overrides, or return default."""
     if path.exists():
-        return AppConfig.from_yaml(path)
+        return AppConfig.from_yaml_with_env(path)
 
     # Return a minimal default config
     return AppConfig(

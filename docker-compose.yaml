@@ -19,6 +19,13 @@ services:
       # LLM API keys (set via .env or docker-compose.override.yaml)
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      # LLM config overrides (opsional — override config.yaml via .env)
+      - AIOPS_LLM_API_KEY=${AIOPS_LLM_API_KEY:-}
+      - AIOPS_LLM_PROVIDER=${AIOPS_LLM_PROVIDER:-}
+      - AIOPS_LLM_MODEL=${AIOPS_LLM_MODEL:-}
+      - AIOPS_LLM_BASE_URL=${AIOPS_LLM_BASE_URL:-}
+      - AIOPS_LLM_TEMPERATURE=${AIOPS_LLM_TEMPERATURE:-}
+      - AIOPS_LLM_MAX_TOKENS=${AIOPS_LLM_MAX_TOKENS:-}
     volumes:
       # SSH keys & known_hosts for connecting to managed servers
       - ${HOME}/.ssh:/home/aiops/.ssh:ro

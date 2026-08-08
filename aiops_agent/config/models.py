@@ -106,6 +106,40 @@ class AppConfig(BaseModel):
         data = yaml.safe_load(path.read_text())
         return cls.model_validate(data)
 
+    @classmethod
+    def from_yaml_with_env(cls, path: Path) -> "AppConfig":
+        """Load config from YAML, then override LLM fields with env vars (higher priority)."""
+        import os
+
+        import yaml
+
+        data = yaml.safe_load(path.read_text())
+        config = cls.model_validate(data)
+
+        # LLM env var overrides — env vars take priority over config.yaml
+        env_overrides = {
+            "AIOPS_LLM_PROVIDER": ("provider", None),
+            "AIOPS_LLM_MODEL": ("model", None),
+            "AIOPS_LLM_BASE_URL": ("base_url", None),
+            "AIOPS_LLM_TEMPERATURE": ("temperature", float),
+            "AIOPS_LLM_MAX_TOKENS": ("max_tokens", int),
+        }
+        for env_var, (field_name, cast) in env_overrides.items():
+            value = os.getenv(env_var)
+            if value is not None:
+                if cast is not None:
+                    value = cast(value)
+                setattr(config.llm, field_name, value)
+
+        # Separate env var for API key (SecretStr)
+        api_key = os.getenv("AIOPS_LLM_API_KEY") or os.getenv("OPENAI_API_KEY")
+        if api_key:
+            from pydantic import SecretStr
+
+            config.llm.api_key = SecretStr(api_key)
+
+        return config
+
     def get_server(self, name: str) -> ServerConfig:
         """Get a server by name, falling back to default_server."""
         for s in self.servers:
