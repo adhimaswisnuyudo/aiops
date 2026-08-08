@@ -60,6 +60,7 @@ class SSHClient:
             "port": self._server.port,
             "username": self._server.username,
             "known_hosts": None,  # Accept all hosts — production should use known_hosts
+            "x509_trusted_certs": (),  # Disable X.509 cert path lookup (avoids ~/.ssh/crt PermError)
         }
 
         if self._server.ssh_key_path:
