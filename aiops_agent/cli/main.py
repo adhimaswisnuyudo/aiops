@@ -13,7 +13,7 @@ import yaml
 from aiops_agent.agent.planner import AgentPlanner
 from aiops_agent.config.models import AppConfig, SecurityConfig, ServerConfig
 from aiops_agent.memory.store import MemoryStore
-from aiops_agent.skills.registry impox`rt SkillRegistry
+from aiops_agent.skills.registry import SkillRegistry
 from aiops_agent.skills.server_status import ServerStatusSkill
 from aiops_agent.skills.laravel_status import LaravelStatusSkill
 from aiops_agent.skills.database_status import DatabaseStatusSkill
