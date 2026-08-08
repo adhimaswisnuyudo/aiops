@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -74,21 +73,7 @@ class SSHClient:
                 connect_kwargs["client_keys"] = [str(key_path)]
 
         logger.info("Connecting to %s@%s:%d ...", self._server.username, self._server.host, self._server.port)
-
-        # Workaround: asyncssh internally calls Path.home() / '.ssh' / 'crt'
-        # and checks .is_dir() before applying x509_trusted_certs, which
-        # fails with PermissionError when ~/.ssh is mounted from a host
-        # with different UID. Temporarily redirect HOME to /tmp.
-        saved_home = os.environ.get("HOME")
-        try:
-            os.environ["HOME"] = "/tmp"
-            self._conn = await asyncssh.connect(**connect_kwargs)
-        finally:
-            if saved_home is not None:
-                os.environ["HOME"] = saved_home
-            else:
-                os.environ.pop("HOME", None)
-
+        self._conn = await asyncssh.connect(**connect_kwargs)
         logger.info("Connected to %s", self._server.display_name)
 
     async def disconnect(self) -> None:

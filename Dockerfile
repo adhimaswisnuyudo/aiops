@@ -14,10 +14,8 @@ RUN apt-get update && \
         ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Create non-root user
-RUN useradd --create-home --shell /bin/bash aiops && \
-    mkdir -p /home/aiops/.ssh /app /app/data && \
-    chown -R aiops:aiops /app /home/aiops/.ssh
+# Create app directories
+RUN mkdir -p /app /app/data
 
 WORKDIR /app
 
@@ -29,8 +27,6 @@ COPY config.yaml ./config.yaml
 
 # Install dependencies + package in editable mode
 RUN pip install --no-cache-dir -e ".[dev]"
-
-USER aiops
 
 # Default: interactive REPL mode (override with CLI args)
 ENTRYPOINT ["aiops"]

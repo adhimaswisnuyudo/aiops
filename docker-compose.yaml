@@ -28,7 +28,7 @@ services:
       - AIOPS_LLM_MAX_TOKENS=${AIOPS_LLM_MAX_TOKENS:-}
     volumes:
       # SSH keys & known_hosts for connecting to managed servers
-      - ${HOME}/.ssh:/home/aiops/.ssh:ro
+      - ${HOME}/.ssh:/root/.ssh:ro
       # Persist conversation memory
       - aiops_data:/app/data
       # Mount custom config (optional)
