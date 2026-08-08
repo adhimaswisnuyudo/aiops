@@ -23,11 +23,13 @@ WORKDIR /app
 COPY pyproject.toml .
 COPY aiops_agent/ ./aiops_agent/
 COPY playbooks/ ./playbooks/
-COPY config.yaml ./config.yaml
+COPY config.example.yaml ./config.example.yaml
+COPY docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh
 
 # Install dependencies + package in editable mode
 RUN pip install --no-cache-dir -e ".[dev]"
 
 # Default: interactive REPL mode (override with CLI args)
-ENTRYPOINT ["aiops"]
+ENTRYPOINT ["./docker-entrypoint.sh", "aiops"]
 CMD ["repl"]

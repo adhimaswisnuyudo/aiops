@@ -31,8 +31,8 @@ services:
       - ${HOME}/.ssh:/root/.ssh:ro
       # Persist conversation memory
       - aiops_data:/app/data
-      # Mount custom config (optional)
-      - ./config.yaml:/app/config.yaml:ro
+      # Mount custom config (optional — edit config.yaml di host lalu mount)
+      # - ./config.yaml:/app/config.yaml:ro
     stdin_open: true   # for REPL interactive mode
     tty: true          # for REPL interactive mode
     networks:
