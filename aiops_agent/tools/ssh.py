@@ -72,6 +72,10 @@ class SSHClient:
             else:
                 connect_kwargs["client_keys"] = [str(key_path)]
 
+        # Password fallback
+        if self._server.password:
+            connect_kwargs["password"] = self._server.password.get_secret_value()
+
         logger.info("Connecting to %s@%s:%d ...", self._server.username, self._server.host, self._server.port)
         self._conn = await asyncssh.connect(**connect_kwargs)
         logger.info("Connected to %s", self._server.display_name)
