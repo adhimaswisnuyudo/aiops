@@ -251,12 +251,14 @@ class TelegramBot:
         except KeyError:
             return [(chat_id, "❌ No server configured. Add servers to `config.yaml` first.")]
 
+        ssh_client = await self._ssh_pool.get_client(server)
         try:
             result = await self._planner.execute(
                 text=text,
                 server_name=server.name,
                 server_host=server.host,
                 environment=server.environment,
+                ssh_client=ssh_client,
             )
         except Exception as exc:
             logger.exception("Agent execution failed")
