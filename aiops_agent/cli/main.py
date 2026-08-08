@@ -19,15 +19,64 @@ from aiops_agent.skills.laravel_status import LaravelStatusSkill
 from aiops_agent.skills.database_status import DatabaseStatusSkill
 from aiops_agent.skills.nginx_status import NginxStatusSkill
 from aiops_agent.tools.base import BaseTool
-from aiops_agent.tools.docker import DockerTool
-from aiops_agent.tools.git import GitTool
-from aiops_agent.tools.laravel import LaravelTool
-from aiops_agent.tools.mysql import MySQLTool
-from aiops_agent.tools.nginx import NginxTool
-from aiops_agent.tools.php import PHPTool
+from aiops_agent.tools.docker import (
+    DockerImages,
+    DockerLogs,
+    DockerPS,
+    DockerPSAll,
+    DockerStats,
+    DockerStatusTool,
+)
+from aiops_agent.tools.git import (
+    GitBranchTool,
+    GitLogTool,
+    GitRemoteTool,
+    GitStatusTool,
+)
+from aiops_agent.tools.laravel import (
+    JournalCtlTool,
+    LaravelEnvTool,
+    LaravelLogTool,
+    LaravelRoutesTool,
+    LaravelScheduleTool,
+    LaravelVersionTool,
+)
+from aiops_agent.tools.mysql import (
+    DatabaseSizeTool,
+    MySQLErrorLogTool,
+    MySQLProcessListTool,
+    MySQLSlowQueryTool,
+    MySQLStatusTool,
+    MySQLStatusVarsTool,
+)
+from aiops_agent.tools.nginx import (
+    NginxAccessLogTool,
+    NginxConfigTestTool,
+    NginxErrorLogTool,
+    NginxStatusTool,
+)
+from aiops_agent.tools.php import (
+    PHPErrorLogTool,
+    PHPFPMConfigTool,
+    PHPFPMProcessesTool,
+    PHPModulesTool,
+    PHPStatusTool,
+    PHPVersionTool,
+)
 from aiops_agent.tools.registry import ToolRegistry
 from aiops_agent.tools.ssh import SSHClientPool
-from aiops_agent.tools.system import SystemTool
+from aiops_agent.tools.system import (
+    CPUInfoTool,
+    DiskTool,
+    DiskUsagePercentTool,
+    LoadAverageTool,
+    MemoryTool,
+    NetworkTool,
+    OSInfoTool,
+    ProcessListTool,
+    UptimeTool,
+    UsersTool,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -65,14 +114,56 @@ def build_registry(security: SecurityConfig) -> tuple[ToolRegistry, SSHClientPoo
     ssh_pool = SSHClientPool(security=security)
     tool_registry = ToolRegistry(phase=1)
 
+    # System tools
     tools: list[BaseTool] = [
-        SystemTool(),
-        NginxTool(),
-        PHPTool(),
-        MySQLTool(),
-        LaravelTool(),
-        DockerTool(),
-        GitTool(),
+        UptimeTool(),
+        CPUInfoTool(),
+        MemoryTool(),
+        DiskTool(),
+        DiskUsagePercentTool(),
+        LoadAverageTool(),
+        UsersTool(),
+        ProcessListTool(),
+        OSInfoTool(),
+        NetworkTool(),
+        # Nginx tools
+        NginxStatusTool(),
+        NginxAccessLogTool(),
+        NginxErrorLogTool(),
+        NginxConfigTestTool(),
+        # PHP tools
+        PHPStatusTool(),
+        PHPVersionTool(),
+        PHPModulesTool(),
+        PHPFPMConfigTool(),
+        PHPErrorLogTool(),
+        PHPFPMProcessesTool(),
+        # MySQL tools
+        MySQLStatusTool(),
+        MySQLProcessListTool(),
+        MySQLStatusVarsTool(),
+        MySQLSlowQueryTool(),
+        DatabaseSizeTool(),
+        MySQLErrorLogTool(),
+        # Laravel tools
+        LaravelVersionTool(),
+        LaravelLogTool(),
+        LaravelRoutesTool(),
+        LaravelEnvTool(),
+        LaravelScheduleTool(),
+        JournalCtlTool(),
+        # Docker tools
+        DockerStatusTool(),
+        DockerPS(),
+        DockerPSAll(),
+        DockerStats(),
+        DockerImages(),
+        DockerLogs(),
+        # Git tools
+        GitStatusTool(),
+        GitBranchTool(),
+        GitLogTool(),
+        GitRemoteTool(),
     ]
     tool_registry.register_many(tools)
 
