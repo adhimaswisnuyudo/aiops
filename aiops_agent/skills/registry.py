@@ -25,13 +25,13 @@ class SkillRegistry:
         logger.debug("Registered skill: %s", skill.name)
 
     async def execute(
-        self, name: str, context: Any, **kwargs: Any
+        self, name: str, context: Any, ssh_client: Any = None, **kwargs: Any
     ) -> Any:
         if name not in self._skills:
             available = ", ".join(self._skills.keys())
             raise KeyError(f"Skill {name!r} not found. Available: {available}")
 
-        return await self._skills[name].execute(context, **kwargs)
+        return await self._skills[name].execute(context, ssh_client=ssh_client, **kwargs)
 
     def list_skills(self) -> list[dict[str, Any]]:
         return [skill.to_dict() for skill in self._skills.values()]

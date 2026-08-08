@@ -80,7 +80,12 @@ class AgentPlanner:
         return list(matched_skills)
 
     async def execute(
-        self, text: str, server_name: str, server_host: str, environment: str = "staging"
+        self,
+        text: str,
+        server_name: str,
+        server_host: str,
+        environment: str = "staging",
+        ssh_client: Any = None,
     ) -> dict[str, Any]:
         """Parse request, run skills, return structured results."""
         skill_names = self.parse_request(text)
@@ -100,7 +105,7 @@ class AgentPlanner:
 
         for skill_name in skill_names:
             try:
-                result = await self._skills.execute(skill_name, context)
+                result = await self._skills.execute(skill_name, context, ssh_client=ssh_client)
                 results[skill_name] = {
                     "success": result.success,
                     "output": result.output,

@@ -19,7 +19,7 @@ class DatabaseStatusSkill(BaseSkill):
     def __init__(self, tool_registry: ToolRegistry) -> None:
         super().__init__(tool_registry)
 
-    async def execute(self, context: SkillContext, **kwargs: Any) -> SkillResult:
+    async def execute(self, context: SkillContext, ssh_client: Any = None, **kwargs: Any) -> SkillResult:
         start = time.monotonic()
         results = []
         errors = []
@@ -35,7 +35,7 @@ class DatabaseStatusSkill(BaseSkill):
 
         for tool_name, tool_kwargs in tools_to_run:
             try:
-                result = await self._run_tool(tool_name, context, **tool_kwargs)
+                result = await self._run_tool(tool_name, context, ssh_client, **tool_kwargs)
                 results.append(result)
                 if result.error:
                     errors.append(f"[{tool_name}] {result.error}")

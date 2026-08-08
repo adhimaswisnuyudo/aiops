@@ -212,6 +212,7 @@ async def run_agent(
         server_name=server.name,
         server_host=server.host,
         environment=server.environment,
+        ssh_client=ssh_client,
     )
 
     if output_format == "json":

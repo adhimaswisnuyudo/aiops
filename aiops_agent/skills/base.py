@@ -44,7 +44,7 @@ class BaseSkill(ABC):
         self._tools = tool_registry
 
     @abstractmethod
-    async def execute(self, context: SkillContext, **kwargs: Any) -> SkillResult:
+    async def execute(self, context: SkillContext, ssh_client: Any = None, **kwargs: Any) -> SkillResult:
         """Execute the skill workflow."""
         ...
 
@@ -56,7 +56,7 @@ class BaseSkill(ABC):
         }
 
     async def _run_tool(
-        self, name: str, context: Any, ssh_client: Any = None, **kwargs: Any
+        self, name: str, context: Any, ssh_client: Any, **kwargs: Any
     ) -> ToolResult:
         """Convenience method to run a registered tool."""
         from aiops_agent.tools.base import ToolContext
