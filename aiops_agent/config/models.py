@@ -126,9 +126,16 @@ class AppConfig(BaseModel):
         }
         for env_var, (field_name, cast) in env_overrides.items():
             value = os.getenv(env_var)
-            if value is not None:
+            if value is not None and value != "":
                 if cast is not None:
-                    value = cast(value)
+                    try:
+                        value = cast(value)
+                    except (ValueError, TypeError):
+                        logger.warning(
+                            "Cannot cast env %s=%r to %s, using default",
+                            env_var, value, cast.__name__,
+                        )
+                        continue
                 setattr(config.llm, field_name, value)
 
         # Separate env var for API key (SecretStr)
