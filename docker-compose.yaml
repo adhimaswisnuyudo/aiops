@@ -1,0 +1,48 @@
+# AIOps Agent — Docker Compose
+# Full stack: agent + web dashboard (future) + DB (future)
+version: "3.9"
+
+services:
+  aiops-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: aiops-agent:0.1.0
+    container_name: aiops-agent
+    hostname: aiops-agent
+    environment:
+      - CONFIG_PATH=/app/config.yaml
+      - LOG_LEVEL=info
+      - DATA_DIR=/app/data
+      # Telegram Bot token (set via .env or docker-compose.override.yaml)
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      # LLM API keys (set via .env or docker-compose.override.yaml)
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    volumes:
+      # SSH keys & known_hosts for connecting to managed servers
+      - ${HOME}/.ssh:/home/aiops/.ssh:ro
+      # Persist conversation memory
+      - aiops_data:/app/data
+      # Mount custom config (optional)
+      - ./config.yaml:/app/config.yaml:ro
+    stdin_open: true   # for REPL interactive mode
+    tty: true          # for REPL interactive mode
+    networks:
+      - aiops-net
+    # Override CMD to run ad-hoc queries from CLI:
+    # docker compose run --rm aiops-agent "check all" -s staging
+    # Or drop into REPL: docker compose run --rm aiops-agent repl
+
+  # Future: web dashboard
+  # api:
+  #   build: .
+  #   ...
+
+volumes:
+  aiops_data:
+    driver: local
+
+networks:
+  aiops-net:
+    driver: bridge

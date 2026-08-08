@@ -1,0 +1,40 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
+dist/
+build/
+.eggs/
+
+# Virtualenv
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data (persisted in volume)
+data/
+
+# Docker
+.dockerignore
+Dockerfile
+docker-compose.yaml

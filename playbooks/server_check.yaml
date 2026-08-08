@@ -1,0 +1,65 @@
+# Playbook: Server Health Check
+# Phase 1 — Read-only health check across all key services
+# Usage: aiops-agent run playbook server_check -s myserver
+
+name: server_health_check
+description: "Comprehensive read-only server health check"
+phase: 1
+read_only: true
+
+steps:
+  - name: check_uptime
+    tool: uptime
+    description: "Check how long the server has been running"
+    timeout: 10
+
+  - name: check_system_resources
+    tool: cpu_info
+    description: "Check CPU usage"
+    timeout: 10
+
+  - name: check_memory
+    tool: memory
+    description: "Check RAM usage"
+    timeout: 10
+
+  - name: check_disk
+    tool: disk_percent
+    description: "Check disk usage per mount"
+    timeout: 10
+
+  - name: check_load
+    tool: load_average
+    description: "Check load average"
+    timeout: 5
+
+  - name: check_processes
+    tool: top_processes
+    description: "Check top CPU-consuming processes"
+    timeout: 10
+
+  - name: check_nginx
+    tool: nginx_status
+    description: "Check Nginx status"
+    timeout: 10
+
+  - name: check_php
+    tool: php_version
+    description: "Check PHP version"
+    timeout: 10
+
+  - name: check_mysql
+    tool: mysql_status
+    description: "Check MySQL status"
+    timeout: 10
+
+alert_rules:
+  - metric: disk_usage
+    condition: "> 85"
+    severity: warning
+    message: "Disk usage is high on {{ server_name }}"
+
+  - metric: memory_usage
+    condition: "> 90"
+    severity: critical
+    message: "Memory usage critical on {{ server_name }}"

@@ -1,0 +1,61 @@
+# AIOps Agent Configuration
+# =============================
+# Phase: 1 (read-only tools only)
+# Set AIOPS_PHASE env var to override.
+
+phase: 1
+log_level: info
+data_dir: /app/data
+
+# Telegram Bot (optional)
+telegram:
+  enabled: false
+  token_env: TELEGRAM_BOT_TOKEN    # set via environment variable
+  allowed_users: []                 # Telegram user IDs (empty = allow all)
+  webhook: false                    # true = webhook mode, false = long polling
+  webhook_url: ""                   # only if webhook=true
+  webhook_port: 8443                # only if webhook=true
+
+# Managed servers (SSH targets) — edit these!
+servers:
+  - name: staging
+    host: YOUR_STAGING_IP_OR_HOSTNAME
+    port: 22
+    username: YOUR_SSH_USERNAME
+    environment: staging
+    ssh_key_path: ~/.ssh/id_rsa
+    tags:
+      - web
+      - laravel
+      - staging
+
+  - name: production
+    host: YOUR_PRODUCTION_IP_OR_HOSTNAME
+    port: 22
+    username: YOUR_SSH_USERNAME
+    environment: production
+    ssh_key_path: ~/.ssh/id_rsa
+    tags:
+      - web
+      - laravel
+      - production
+
+# Security rules
+security:
+  forbidden_commands:
+    - "rm -rf /"
+    - "mkfs"
+    - "dd if="
+    - ":(){ :|:& };:"     # fork bomb
+    - "> /dev/sda"
+    - "chmod 777 /"
+  require_confirmation: true
+  audit_log_path: /app/data/audit.log
+
+# LLM providers (optional — for Phase 2+)
+llm:
+  provider: openai          # openai | anthropic | deepseek
+  model: gpt-4o
+  temperature: 0.3
+  max_tokens: 2048
+  api_key_env: OPENAI_API_KEY

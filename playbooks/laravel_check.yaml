@@ -1,0 +1,55 @@
+# Playbook: Laravel Application Health Check
+# Phase 1 — Read-only check of Laravel app
+# Usage: aiops-agent run playbook laravel_check -s myserver
+
+name: laravel_health_check
+description: "Read-only Laravel application health check"
+phase: 1
+read_only: true
+
+steps:
+  - name: check_laravel_version
+    tool: laravel_version
+    description: "Check Laravel version"
+    timeout: 15
+
+  - name: check_laravel_env
+    tool: laravel_env
+    description: "Check Laravel environment mode"
+    timeout: 10
+
+  - name: check_laravel_routes
+    tool: laravel_routes
+    description: "Count and verify route registration"
+    timeout: 15
+
+  - name: check_laravel_cache
+    tool: laravel_cache
+    description: "Check cache driver and stats"
+    timeout: 15
+
+  - name: check_laravel_logs
+    tool: laravel_logs
+    description: "Check for errors in recent logs"
+    timeout: 10
+
+  - name: check_laravel_queues
+    tool: laravel_queues
+    description: "Check job queue status and size"
+    timeout: 10
+
+  - name: check_laravel_scheduler
+    tool: laravel_scheduler
+    description: "Check scheduled task status"
+    timeout: 10
+
+alert_rules:
+  - metric: queue_size
+    condition: "> 100"
+    severity: warning
+    message: "Laravel queue has accumulated {{ queue_size }} pending jobs on {{ server_name }}"
+
+  - metric: failed_jobs
+    condition: "> 0"
+    severity: warning
+    message: "{{ failed_jobs }} failed jobs in Laravel queue on {{ server_name }}"
